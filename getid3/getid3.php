@@ -1147,7 +1147,6 @@ class getID3
 		if ($encoding == $this->encoding) {
 			return;
 		}
-
 		// loop thru array
 		foreach ($array as $key => $value) {
 
@@ -1199,9 +1198,22 @@ class getID3
 				$this->info[$comment_name]['encoding'] = $encoding;
 			}
 
+			//Store tags in origin encoding (id3v2)
+			if (!empty($this->info[$comment_name]['comments_origin'])) {
+				foreach ($this->info[$comment_name]['comments_origin'] as $tag_key => $valuearray) {
+					foreach ($valuearray as $key => $value) {
+						if (is_string($value)) {
+							$value = trim($value, " \r\n\t"); // do not trim nulls from $value!! Unicode characters will get mangled if trailing nulls are removed!
+						}
+						if ($value) {
+    						    $this->info['tags_origin'][trim($tag_name)][trim($tag_key)][] = $value;
+						}
+					}
+				}
+			}
+
 			// copy comments if key name set
 			if (!empty($this->info[$comment_name]['comments'])) {
-
 				foreach ($this->info[$comment_name]['comments'] as $tag_key => $valuearray) {
 					foreach ($valuearray as $key => $value) {
 						if (is_string($value)) {
@@ -1209,15 +1221,17 @@ class getID3
 						}
 						if ($value) {
 							$this->info['tags'][trim($tag_name)][trim($tag_key)][] = $value;
+							if (empty($this->info[$comment_name]['comments_origin'])) { //Store tags in origin encoding (id3v1)
+							    $this->info['tags_origin'][trim($tag_name)][trim($tag_key)][] = $value;
+							}
 						}
 					}
 				}
-
+				
 				if (!isset($this->info['tags'][$tag_name])) {
 					// comments are set but contain nothing but empty strings, so skip
 					continue;
 				}
-
 				if ($this->option_tags_html) {
 					foreach ($this->info['tags'][$tag_name] as $tag_key => $valuearray) {
 						foreach ($valuearray as $key => $value) {
@@ -1230,7 +1244,6 @@ class getID3
 						}
 					}
 				}
-
 				$this->CharConvert($this->info['tags'][$tag_name], $encoding);           // only copy gets converted!
 			}
 

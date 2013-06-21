@@ -644,6 +644,7 @@ class getid3_id3v2 extends getid3_handler
 			$parsedFrame['data'] = substr($parsedFrame['data'], $frame_terminatorpos + strlen($this->TextEncodingTerminatorLookup($frame_textencoding)));
 			if (!empty($parsedFrame['framenameshort']) && !empty($parsedFrame['data'])) {
 				$info['id3v2']['comments'][$parsedFrame['framenameshort']][] = trim(getid3_lib::iconv_fallback($parsedFrame['encoding'], $info['id3v2']['encoding'], $parsedFrame['data']));
+				$info['id3v2']['comments_origin'][$parsedFrame['framenameshort']][] = trim($parsedFrame['data']); //Store tags in origin encoding
 			}
 			//unset($parsedFrame['data']); do not unset, may be needed elsewhere, e.g. for replaygain
 
@@ -670,6 +671,7 @@ class getid3_id3v2 extends getid3_handler
 				$string = getid3_lib::iconv_fallback($parsedFrame['encoding'], $info['id3v2']['encoding'], $parsedFrame['data']);
 				$string = rtrim($string, "\x00"); // remove possible terminating null (put by encoding id or software bug)
 				$info['id3v2']['comments'][$parsedFrame['framenameshort']][] = $string;
+				$info['id3v2']['comments_origin'][$parsedFrame['framenameshort']][] = trim($parsedFrame['data']); //Store tags in origin encoding
 				unset($string);
 			}
 
@@ -754,6 +756,7 @@ class getid3_id3v2 extends getid3_handler
 			$parsedFrame['data']       = (string) substr($parsedFrame['data'], $frame_offset);
 			if (!empty($parsedFrame['framenameshort']) && !empty($parsedFrame['data'])) {
 				$info['id3v2']['comments'][$parsedFrame['framenameshort']][] = getid3_lib::iconv_fallback($parsedFrame['encoding'], $info['id3v2']['encoding'], $parsedFrame['data']);
+				$info['id3v2']['comments_origin'][$parsedFrame['framenameshort']][] = trim($parsedFrame['data']); //Store tags in origin encoding
 			}
 
 
@@ -888,6 +891,7 @@ class getid3_id3v2 extends getid3_handler
 			$parsedFrame['description']  = $frame_description;
 			if (!empty($parsedFrame['framenameshort']) && !empty($parsedFrame['data'])) {
 				$info['id3v2']['comments'][$parsedFrame['framenameshort']][] = getid3_lib::iconv_fallback($parsedFrame['encoding'], $info['id3v2']['encoding'], $parsedFrame['data']);
+				$info['id3v2']['comments_origin'][$parsedFrame['framenameshort']][] = trim($parsedFrame['data']); //Store tags in origin encoding
 			}
 			unset($parsedFrame['data']);
 
@@ -992,6 +996,7 @@ class getid3_id3v2 extends getid3_handler
 				$parsedFrame['data']         = $frame_text;
 				if (!empty($parsedFrame['framenameshort']) && !empty($parsedFrame['data'])) {
 					$info['id3v2']['comments'][$parsedFrame['framenameshort']][] = getid3_lib::iconv_fallback($parsedFrame['encoding'], $info['id3v2']['encoding'], $parsedFrame['data']);
+					$info['id3v2']['comments_origin'][$parsedFrame['framenameshort']][] = trim($parsedFrame['data']); //Store tags in origin encoding
 				}
 
 			}
@@ -1576,6 +1581,7 @@ class getid3_id3v2 extends getid3_handler
 			$parsedFrame['data']         = (string) substr($parsedFrame['data'], $frame_offset);
 			if (!empty($parsedFrame['framenameshort']) && !empty($parsedFrame['data'])) {
 				$info['id3v2']['comments'][$parsedFrame['framenameshort']][] = getid3_lib::iconv_fallback($parsedFrame['encoding'], $info['id3v2']['encoding'], $parsedFrame['data']);
+				$info['id3v2']['comments_origin'][$parsedFrame['framenameshort']][] = trim($parsedFrame['data']); //Store tags in origin encoding
 			}
 			unset($parsedFrame['data']);
 
